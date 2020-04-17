@@ -6,7 +6,7 @@
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
           <v-list-tile avatar>
-            <v-list-tile-avatar> <img src="../assets/logo.png"> </v-list-tile-avatar>
+            <v-list-tile-avatar> <img src="../../assets/logo.png"> </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title>frontend</v-list-tile-title>
             </v-list-tile-content>
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-  import menus from "../menu";
+  import menus from "../../menu";
 
   export default {
     data() {
@@ -89,11 +89,12 @@
       item1() {
         let arr = this.$route.path.split("/");
         console.log(this.$route.path)
-        return this.menuMap[arr[1]].name
+        return this.menuMap[arr[2]].name
       },
       item2() {
         let arr = this.$route.path.split("/");
-        return this.menuMap[arr[1]][arr[2]]
+        console.log(arr)
+        return this.menuMap[arr[2]][arr[2]]
       }
     },
     created() {
