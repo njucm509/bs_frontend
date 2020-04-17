@@ -5,7 +5,7 @@ Vue.use(Router)
 
 function route(path, file, name, children) {
   return {
-    // exact: true,
+    exact: true,
     path,
     name,
     children,
@@ -14,6 +14,7 @@ function route(path, file, name, children) {
 }
 
 const router = new Router({
+  mode: 'history',
   routes: [
     route("/login", '/Login', "Login"),
     route("/register", '/Register', "Register"),
