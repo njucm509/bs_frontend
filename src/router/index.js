@@ -34,10 +34,16 @@ const router = new Router({
         route("authority/role", '/admin/authority/role', "role")
       ]
     },
-    route("/index", "/index", "index"),
     {
       path: '/',
-      redirect: '/index',
+      component: () => import('../pages/index'),
+      children: [
+        route("index", "/main/index", "index"),
+        route("index/release", "/main/release", "release"),
+        route("index/encrypt", "/main/encrypt", "encrypt"),
+        route("index/search", "/main/search", "search"),
+        route("index/user/me", "/main/info", "info"),
+      ]
     },
   ]
 })
