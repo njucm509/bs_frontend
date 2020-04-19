@@ -37,6 +37,7 @@ const router = new Router({
     {
       path: '/',
       component: () => import('../pages/index'),
+      redirect: 'index',
       children: [
         route("index", "/main/index", "index"),
         route("index/release", "/main/release", "release"),
