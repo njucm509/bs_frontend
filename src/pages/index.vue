@@ -38,16 +38,13 @@
           {text: '数据发布', path: '/index/release', isActive: false},
           {text: '数据加密', path: '/index/encrypt', isActive: false},
           {text: '加密搜索', path: '/index/search', isActive: false},
-          {text: '个人中心', path: '/index/user/me', isActive: false},
+          {text: '个人中心', path: '/index/user/', isActive: false},
         ],
         user: {},
         show: true
       }
     },
     methods: {
-      /* changeActive: (data) => (console.log(this.navList))
-      * 箭头函数的this指向为当前对象
-      * */
       changeActive: function (data) {
         this.navList.forEach((obj) => (obj.isActive = false))
         data.isActive = !data.isActive
@@ -75,9 +72,11 @@
 
   #content {
     float: none;
+    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    box-shadow: 1px 1px 2px darkgray;
   }
 
   #header #left {
