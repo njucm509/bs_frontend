@@ -1,5 +1,5 @@
 // 后台网关接口
-const baseUrl = 'api.bs.com'
+const baseUrl = 'http://api.bs.com'
 const config = {
   locale: 'zh-CN', // en-US, zh-CN
   url: baseUrl,
