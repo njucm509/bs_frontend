@@ -43,23 +43,36 @@ const router = new Router({
         route("index/release", "/main/release", "release"),
         route("index/encrypt", "/main/encrypt", "encrypt"),
         route("index/search", "/main/search", "search"),
-        route("index/user/me", "/main/info", "info"),
+        {
+          path: 'index/user',
+          component: () => import('../pages/main/user'),
+          redirect: 'index/user/info',
+          children: [
+            route("info", "/main/info/info", "info"),
+            route("data", "/main/info/data", "data"),
+            route("task", "/main/info/task", "task"),
+            route("record", "/main/info/record", "record"),
+            route("permission", "/main/info/permission", "permission"),
+          ]
+        },
       ]
     },
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   if (to.path=='/login'||to.path=='/register'){
-//     next()
-//   }else{
-//     if (sessionStorage.getItem('user')){
-//       next()
-//     }else {
-//       next({
-//         path:'login'
-//       })
-//     }
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.path == '/login' || to.path == '/register') {
+    next()
+  } else if (to.path == '/index') {
+    // if (sessionStorage.getItem('user')){
+    next();
+    // }else {
+    //   next({
+    //     path:'login'
+    //   })
+    // }
+  } else {
+    next();
+  }
+})
 export default router
