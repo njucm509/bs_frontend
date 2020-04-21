@@ -5,24 +5,24 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                userList: []
-            }
-        },
-        methods: {
-            getData() {
-                this.$http.get('/user/list').then(res => {
-                    console.log(res)
-                    sessionStorage.setItem('user','')
-                })
-            }
-        },
-        mounted() {
-            this.getData();
-        }
+  export default {
+    name: 'record',
+    data() {
+      return {
+        userList: []
+      }
+    },
+    methods: {
+      getData() {
+        this.$http.get('/log/list').then(res => {
+          console.log(res)
+        })
+      }
+    },
+    mounted() {
+      this.getData();
     }
+  }
 </script>
 
 <style>
