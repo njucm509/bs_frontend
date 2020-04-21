@@ -24,14 +24,12 @@ const router = new Router({
       redirect: '/admin/index/dashboard',
       children: [
         route("index/dashboard", "/admin/Dashboard", "Dashboard"),
-        route("log/test1-1", '/admin/log/test1-1', "log-1"),
-        route("log/test1-2", '/admin/log/test1-2', "log-2"),
-        route("log/test1-3", '/admin/log/test1-3', "log-3"),
-        route("user/user-1", '/admin/user/test2-1', "user-1"),
-        route("user/user-2", '/admin/user/test2-2', "user-2"),
+        route("user/check", '/admin/user/check', "userCheck"),
+        route("user/list", '/admin/user/list', "userList"),
         route("authority/list", '/admin/authority/list', "List"),
         route("authority/member", '/admin/authority/member', "member"),
         route("authority/role", '/admin/authority/role', "role"),
+        route("log/record", '/admin/log/record', "logRecord"),
       ]
     },
     {
