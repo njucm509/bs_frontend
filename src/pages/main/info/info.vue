@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-card class="px-5">
+    <v-card class="col-xs-9 col-sm-9">
       <v-card-title><h2>个人信息</h2></v-card-title>
       <v-form v-model="valid" ref="myForm">
         <v-text-field v-model="item.name" label="账号：" disabled/>
         <v-text-field v-model="item.nickname" label="真实姓名：" required/>
         <v-text-field v-model="item.password" label="密码：" required/>
-        <v-text-field v-model="item.email" label="密码：" required/>
-        <v-text-field v-model="item.phone" label="密码：" required/>
+        <v-text-field v-model="item.email" label="邮箱：" required/>
+        <v-text-field v-model="item.phone" label="电话：" required/>
         <v-switch v-model="item.role" :label="item.role==1?'管理员':'普通用户'" disabled/>
         <v-text-field v-model="item.createAt" label="创建时间：" disabled/>
         <v-text-field v-model="item.updateAt" label="上次更新时间：" disabled/>
@@ -86,9 +86,9 @@
 </script>
 
 <style scoped>
-  h2 {
-    position: relative;
-    top: -20px;
-    left: -20px;
-  }
+  /*h2 {*/
+  /*  position: relative;*/
+  /*  top: -20px;*/
+  /*  left: -20px;*/
+  /*}*/
 </style>
