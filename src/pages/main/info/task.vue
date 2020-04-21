@@ -1,5 +1,5 @@
 <template>
-  <v-card class="col-xs-9 col-sm-9">
+  <v-card class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
     <v-card-title>
       <v-flex xs3>
         <v-text-field label="输入关键字搜索" v-model.lazy="search" append-icon="search" hide-details></v-text-field>

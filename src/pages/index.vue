@@ -22,7 +22,7 @@
         <li role="presentation" id="admin"><a href="/admin" v-if="this.user.id != null">进入管理员界面</a></li>
       </div>
     </div>
-    <div id="content" class="col-xs-8 col-sm-8">
+    <div id="content" class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
       <router-view/>
     </div>
   </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="col-xs-9 col-sm-9">
+    <v-card class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
       <v-card-title><h2>个人信息</h2></v-card-title>
       <v-form v-model="valid" ref="myForm">
         <v-text-field v-model="item.name" label="账号：" disabled/>
