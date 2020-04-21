@@ -9,8 +9,8 @@
         <v-text-field v-model="item.email" label="邮箱：" required/>
         <v-text-field v-model="item.phone" label="电话：" required/>
         <v-switch v-model="item.role" :label="item.role==1?'管理员':'普通用户'" disabled/>
-        <v-text-field v-model="item.createAt" label="创建时间：" disabled/>
-        <v-text-field v-model="item.updateAt" label="上次更新时间：" disabled/>
+        <v-text-field v-model="item.createdAt" label="创建时间：" disabled/>
+        <v-text-field v-model="item.updatedAt" label="上次更新时间：" disabled/>
         <v-layout class="my-4" row>
           <v-spacer/>
           <v-btn @click="submit">修改</v-btn>
@@ -35,8 +35,8 @@
           email: '',
           phone: '',
           role: '0',
-          createAt: '',
-          updateAt: '',
+          createdAt: '',
+          updatedAt: '',
         },
         nameRules: [
           // v => !!v || "名称不能为空",
@@ -64,8 +64,8 @@
           password: '',
           email: '',
           phone: '',
-          createAt: '',
-          updateAt: '',
+          createdAt: '',
+          updatedAt: '',
         }
       }
     },
@@ -78,8 +78,8 @@
         password: '',
         email: '',
         phone: '',
-        createAt: '',
-        updateAt: '',
+        createdAt: '',
+        updatedAt: '',
       }
     }
   }
