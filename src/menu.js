@@ -10,7 +10,7 @@ var menus = [
   {
     action: "apps",
     title: "管理1",
-    path:"/test1",
+    path:"/log",
     items: [
       { title: "管理1-1", path: "/test1-1" },
       { title: "管理1-2", path: "/test1-2" },
@@ -20,7 +20,7 @@ var menus = [
   {
     action: "people",
     title: "管理2",
-    path:"/test2",
+    path:"/user",
     items: [
       { title: "管理2-1", path: "/test2-1" },
       { title: "管理2-2", path: "/test2-2" }
