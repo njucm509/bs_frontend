@@ -1,41 +1,39 @@
-var menus = [
+const menus = [
   {
     action: "home",
     title: "首页",
-    path:"/index",
+    path: "/index",
     items: [
-      { title: "统计", path: "/dashboard" }
-      ]
-  },
-  {
-    action: "apps",
-    title: "日志记录",
-    path:"/log",
-    items: [
-      { title: "管理1-1", path: "/test1-1" },
-      { title: "管理1-2", path: "/test1-2" },
-      { title: "管理1-3", path: "/test1-3" },
+      {title: "统计", path: "/dashboard"}
     ]
   },
   {
     action: "people",
     title: "用户管理",
-    path:"/user",
+    path: "/user",
     items: [
-      { title: "管理2-1", path: "/test2-1" },
-      { title: "管理2-2", path: "/test2-2" }
+      {title: "用户审核", path: "/check"},
+      {title: "用户列表", path: "/list"}
     ]
   },
   {
     action: "settings",
     title: "权限管理",
-    path:"/authority",
+    path: "/authority",
     items: [
-      { title: "权限管理", path: "/list" },
-      { title: "角色管理", path: "/role" },
-      { title: "人员管理", path: "/member" }
+      {title: "权限管理", path: "/list"},
+      {title: "角色管理", path: "/role"},
+      {title: "人员管理", path: "/member"}
     ]
-  }
-]
+  },
+  {
+    action: "apps",
+    title: "日志记录",
+    path: "/log",
+    items: [
+      {title: "操作记录", path: "/record"},
+    ]
+  },
+];
 
 export default menus;
