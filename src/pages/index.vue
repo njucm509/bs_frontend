@@ -40,7 +40,10 @@
           {text: '加密搜索', path: '/index/search', isActive: false},
           {text: '个人中心', path: '/index/user/', isActive: false},
         ],
-        user: {},
+        user: {
+          id: '1',
+          name: 'admin'
+        },
         show: true
       }
     },
