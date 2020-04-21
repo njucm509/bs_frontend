@@ -9,7 +9,7 @@ var menus = [
   },
   {
     action: "apps",
-    title: "管理1",
+    title: "日志记录",
     path:"/log",
     items: [
       { title: "管理1-1", path: "/test1-1" },
@@ -19,7 +19,7 @@ var menus = [
   },
   {
     action: "people",
-    title: "管理2",
+    title: "用户管理",
     path:"/user",
     items: [
       { title: "管理2-1", path: "/test2-1" },
