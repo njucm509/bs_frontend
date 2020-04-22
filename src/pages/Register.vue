@@ -19,7 +19,7 @@
       <el-form-item label="邮箱" required prop="email">
         <el-input v-model="register_form.email"></el-input>
       </el-form-item>
-      <el-form-item label="组织机构">
+      <el-form-item label="角色" required>
         <el-radio-group v-model="register_form.role">
           <el-radio label="1">系统管理员</el-radio>
           <el-radio label="2">监管者</el-radio>
