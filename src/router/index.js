@@ -24,6 +24,7 @@ const router = new Router({
       redirect: '/admin/index/dashboard',
       children: [
         route("index/dashboard", "/admin/Dashboard", "Dashboard"),
+        route("data/info", '/admin/data/info', "dataInfo"),
         route("user/check", '/admin/user/check', "userCheck"),
         route("user/list", '/admin/user/list', "userList"),
         route("authority/list", '/admin/authority/list', "List"),

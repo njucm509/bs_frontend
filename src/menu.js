@@ -17,6 +17,14 @@ const menus = [
     ]
   },
   {
+    action: "apps",
+    title: "数据中心",
+    path: "/data",
+    items: [
+      {title: "数据信息", path: "/info"},
+    ]
+  },
+  {
     action: "settings",
     title: "权限管理",
     path: "/authority",
