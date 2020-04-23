@@ -62,14 +62,14 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.path == '/login' || to.path == '/register') {
     next()
-  } else if (to.path == '/index') {
-    // if (sessionStorage.getItem('user')){
-    next();
-    // }else {
-    //   next({
-    //     path:'login'
-    //   })
-    // }
+  } else if (to.path.startsWith('/index') || to.path.startsWith('/admin')) {
+    if (sessionStorage.getItem('user')) {
+      next();
+    } else {
+      next({
+        path: 'login'
+      })
+    }
   } else {
     next();
   }

@@ -44,7 +44,31 @@
       submit(form) {
         this.$refs[form].validate((valid) => {
           if (valid) {
-
+            this.$http.post('/user/login', this.login).then((res) => {
+              console.log(res.data);
+              let data = res.data;
+              if (data.code == 1) {
+                this.$message({
+                  message: '登陆成功',
+                  type: 'success'
+                });
+                let user = data.user;
+                console.log(user.id);
+                this.$http.get('/user/role/' + user.id).then((role) => {
+                  console.log(role);
+                  user.roleId = role.data;
+                  sessionStorage.setItem('user', JSON.stringify(user));
+                  this.$router.push({
+                    path: '/'
+                  })
+                });
+              } else {
+                this.$message({
+                  message: data.msg,
+                  type: 'error'
+                });
+              }
+            });
           }
         })
       }

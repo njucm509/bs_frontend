@@ -20,7 +20,7 @@
         <el-input v-model="register_form.email"></el-input>
       </el-form-item>
       <el-form-item label="角色" required>
-        <el-radio-group v-model="register_form.role">
+        <el-radio-group v-model="register_form.roleId">
           <el-radio label="1">系统管理员</el-radio>
           <el-radio label="2">监管者</el-radio>
           <el-radio label="3">数据提供者</el-radio>
@@ -75,7 +75,7 @@
           password: '',
           phone: '',
           email: '',
-          role: '1'
+          roleId: '1'
         },
         rules: {
           name: [{
@@ -139,7 +139,22 @@
     },
     methods: {
       submit(form) {
-        this.$http.post();
+        this.$refs[form].validate((valid) => {
+          if (valid) {
+            this.$http.post('/user/create', this.register_form).then((res => {
+              console.log(res.data);
+              let user = res.data;
+              sessionStorage.setItem('user', JSON.stringify(user));
+              this.$message({
+                message: '注册成功',
+                type: 'success'
+              });
+              this.$router.push({
+                path: '/login'
+              })
+            }))
+          }
+        })
       }
     }
   }

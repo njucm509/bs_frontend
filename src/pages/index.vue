@@ -14,7 +14,7 @@
             {{this.user.name}} <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-            <li id="logout"><a @click="logout" style="cursor: pointer">退出登录</a></li>
+            <li id="logout"><a @click="exit" style="cursor: pointer" href="/login">退出登录</a></li>
           </ul>
         </li>
         <li role="presentation" id="login"><a href="/login" v-if="this.show">登陆</a></li>
@@ -40,10 +40,7 @@
           {text: '加密搜索', path: '/index/search', isActive: false},
           {text: '个人中心', path: '/index/user/', isActive: false},
         ],
-        user: {
-          id: '1',
-          name: 'admin'
-        },
+        user: {},
         show: true
       }
     },
@@ -52,9 +49,19 @@
         this.navList.forEach((obj) => (obj.isActive = false))
         data.isActive = !data.isActive
       },
-      logout() {
-        alert('退出');
+      exit() {
+        alert('exit');
+        sessionStorage.removeItem('user');
+        this.$message({
+          message: '成功退出',
+          type: 'success'
+        });
       }
+    },
+    mounted() {
+      this.user = JSON.parse(sessionStorage.getItem('user'));
+      this.show = false;
+      console.log(this.user);
     }
   }
 </script>
