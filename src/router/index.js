@@ -47,11 +47,11 @@ const router = new Router({
           component: () => import('../pages/main/user'),
           redirect: 'index/user/info',
           children: [
-            route("info", "/main/info/info", "info"),
-            route("data", "/main/info/data", "data"),
-            route("task", "/main/info/task", "task"),
-            route("record", "/main/info/record", "record"),
-            route("permission", "/main/info/permission", "permission"),
+            route("info", "/main/user/info", "info"),
+            route("data", "/main/user/data", "data"),
+            route("task", "/main/user/task", "task"),
+            route("record", "/main/user/record", "record"),
+            route("permission", "/main/user/permission", "permission"),
           ]
         },
       ]
@@ -61,8 +61,14 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.path == '/login' || to.path == '/register') {
-    next()
-  } else if (to.path.startsWith('/index') || to.path.startsWith('/admin')) {
+    if (sessionStorage.getItem('user')) {
+      next({
+        path: "/"
+      });
+    } else {
+      next();
+    }
+  } else if (to.path.startsWith('/index/') || to.path.startsWith('/admin')) {
     if (sessionStorage.getItem('user')) {
       next();
     } else {
