@@ -13,9 +13,12 @@ import 'element-ui/lib/theme-chalk/index.css';
 import $ from 'jquery'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min'
+import uploader from 'vue-simple-uploader'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.use(uploader)
+
 // 设置主题
 Vue.use(Vuetify, { theme: config.theme})
 
