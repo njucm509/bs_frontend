@@ -8,18 +8,21 @@
         </li>
       </div>
       <div class="nav nav-tabs" id="right">
-        <li role="presentation" class="dropdown" id="info" v-if="this.user.id != null">
+        <li role="presentation" class="dropdown" id="info"
+            v-if="this.user!=null&&this.user.hasOwnProperty('id') != null">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
              aria-expanded="false">
             {{this.user.name}} <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-            <li id="logout"><a @click="exit" style="cursor: pointer" href="/login">退出登录</a></li>
+            <li id="logout"><a @click="logout" style="cursor: pointer">退出登录</a></li>
           </ul>
         </li>
         <li role="presentation" id="login"><a href="/login" v-if="this.show">登陆</a></li>
         <li role="presentation" id="register"><a href="/register" v-if="this.show">注册</a></li>
-        <li role="presentation" id="admin"><a href="/admin" v-if="this.user.id != null">进入管理员界面</a></li>
+        <li role="presentation" id="admin"><a href="/admin"
+                                              v-if="this.user!=null&&this.user.hasOwnProperty('roleId') != null">进入管理员界面</a>
+        </li>
       </div>
     </div>
     <div id="content" class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
@@ -49,19 +52,28 @@
         this.navList.forEach((obj) => (obj.isActive = false))
         data.isActive = !data.isActive
       },
-      exit() {
-        alert('exit');
-        sessionStorage.removeItem('user');
-        this.$message({
-          message: '成功退出',
-          type: 'success'
+      logout() {
+        this.$confirm('是否退出登陆?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          sessionStorage.clear();
+          location.reload();
+          this.$message({
+            type: 'success',
+            message: '退出成功!'
+          });
+        }).catch(() => {
         });
       }
     },
     mounted() {
       this.user = JSON.parse(sessionStorage.getItem('user'));
-      this.show = false;
-      console.log(this.user);
+      if (this.user != null) {
+        this.show = false;
+      }
+      // console.log(this.user);
     }
   }
 </script>
@@ -113,7 +125,7 @@
     border-bottom: 1px solid gray;
   }
 
-  li:hover::before {
+  #left li:hover::before {
     width: 100%;
   }
 

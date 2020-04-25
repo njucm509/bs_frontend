@@ -1,55 +1,80 @@
 <template>
-  <v-card class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-    <v-card-title>
-      <v-flex xs3>
-        <v-text-field label="输入关键字搜索" v-model.lazy="search" append-icon="search" hide-details></v-text-field>
-      </v-flex>
-    </v-card-title>
-    <v-data-table :headers="headers" :items="items" :pagination.sync="pagination" :total-items="totalItems"
-                  :loading="loading"
-                  class="elevation-1">
-      <template slot="items" slot-scope="props">
-        <td class="text-xs-center">{{ props.item.id }}</td>
-        <td class="text-xs-center">{{ props.item.name }}</td>
-        <td class="text-xs-center">{{ props.item.account }}</td>
-        <td class="text-xs-center">{{ props.item.role == 1?'管理员':'普通用户' }}</td>
-        <td class="text-xs-center">{{ props.item.createAt }}</td>
-        <td class="text-xs-center">{{ props.item.updateAt }}</td>
-        <td class="justify-center layout px-0">
-          <v-btn icon @click="edit(props.item)">
-            <i class="el-icon-edit"/>
-          </v-btn>
-          <v-btn icon @click="delete(props.item)">
-            <i class="el-icon-delete"/>
-          </v-btn>
-        </td>
-      </template>
-    </v-data-table>
-    <v-dialog max-width="500" v-model="show" persistent scrollable>
-      <v-card>
-        <!--对话框的标题-->
-        <v-toolbar dense dark color="primary">
-          <v-toolbar-title>{{isEdit ? '修改' : '新增'}}用户</v-toolbar-title>
-          <v-spacer/>
-          <!--关闭窗口的按钮-->
-          <v-btn icon @click="closeWindow">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </v-toolbar>
-        <!--对话框的内容，表单-->
-        <v-card-text class="px-5" style="height:400px">
-          <user-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit"/>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-  </v-card>
+  <div>
+    <v-card
+      class="col-xs-10 col-sm-10 col-md-10 col-lg-10"
+      color=" lighten-1"
+      height="200px"
+    >
+      <v-upload ref="fileUp" :options="options" :auto="auto" :attrs="attrs"></v-upload>
+      <v-spacer></v-spacer>
+    </v-card>
+    <v-card class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+      <v-card-title>
+        <v-flex xs3>
+          <v-text-field label="输入关键字搜索" v-model.lazy="search" append-icon="search" hide-details></v-text-field>
+        </v-flex>
+      </v-card-title>
+      <v-data-table :headers="headers" :items="items" :pagination.sync="pagination" :total-items="totalItems"
+                    :loading="loading"
+                    class="elevation-1">
+        <template slot="items" slot-scope="props">
+          <td class="text-xs-center">{{ props.item.id }}</td>
+          <td class="text-xs-center">{{ props.item.name }}</td>
+          <td class="text-xs-center">{{ props.item.account }}</td>
+          <td class="text-xs-center">{{ props.item.role == 1?'管理员':'普通用户' }}</td>
+          <td class="text-xs-center">{{ props.item.createAt }}</td>
+          <td class="text-xs-center">{{ props.item.updateAt }}</td>
+          <td class="justify-center layout px-0">
+            <v-btn icon @click="edit(props.item)">
+              <i class="el-icon-edit"/>
+            </v-btn>
+            <v-btn icon @click="delete(props.item)">
+              <i class="el-icon-delete"/>
+            </v-btn>
+          </td>
+        </template>
+      </v-data-table>
+      <v-dialog max-width="500" v-model="show" persistent scrollable>
+        <v-card>
+          <!--对话框的标题-->
+          <v-toolbar dense dark color="primary">
+            <v-toolbar-title>{{isEdit ? '修改' : '新增'}}用户</v-toolbar-title>
+            <v-spacer/>
+            <!--关闭窗口的按钮-->
+            <v-btn icon @click="closeWindow">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <!--对话框的内容，表单-->
+          <v-card-text class="px-5" style="height:400px">
+            <user-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit"/>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-card>
+  </div>
 </template>
 
 <script>
+  import vUpload from '../../../components/form/Upload'
+  import config from "../../../config";
+
   export default {
-    name: "data",
+    name: "vData",
+    components: {
+      'v-upload': vUpload,
+    },
     data() {
       return {
+        options: {
+          target: config.uploadFile,
+          testChunks: false
+        },
+        auto: false,
+        attrs: {
+          // 接受的文件类型，形如['.png', '.jpg', '.jpeg', '.gif', '.bmp'...] 这里我封装了一下
+          // accept: ACCEPT_CONFIG.getAll()
+        },
         pagination: {},
         search: '',
         show: false,
@@ -148,6 +173,7 @@
     },
     mounted() {
       this.getData();
+      console.log(config.uploadFile)
     }
   }
 </script>

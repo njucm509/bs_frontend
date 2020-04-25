@@ -50,4 +50,7 @@
     font-weight: 600;
     color: #0366d6;
   }
+  .nav-tabs>li:hover .dropdown-menu {
+    display: block;
+  }
 </style>

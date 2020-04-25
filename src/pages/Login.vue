@@ -53,14 +53,19 @@
                   type: 'success'
                 });
                 let user = data.user;
-                console.log(user.id);
-                this.$http.get('/user/role/' + user.id).then((role) => {
-                  console.log(role);
-                  user.roleId = role.data;
+                this.$http.get('/user/role/' + user.id).then((res) => {
+                  user.roleId = res.data;
                   sessionStorage.setItem('user', JSON.stringify(user));
                   this.$router.push({
                     path: '/'
                   })
+                });
+                this.$http.get('/auth/role/list').then((res) => {
+                  let roles = {};
+                  for (let i = 0; i < res.data.length; i++) {
+                    roles[i + 1] = res.data[i];
+                  }
+                  sessionStorage.setItem('roles', JSON.stringify(roles));
                 });
               } else {
                 this.$message({

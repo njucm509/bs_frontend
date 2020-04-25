@@ -5,10 +5,14 @@
       <v-form v-model="valid" ref="myForm">
         <v-text-field v-model="item.name" label="账号：" disabled/>
         <v-text-field v-model="item.nickname" label="真实姓名：" required/>
-        <v-text-field v-model="item.password" label="密码：" required/>
         <v-text-field v-model="item.email" label="邮箱：" required/>
         <v-text-field v-model="item.phone" label="电话：" required/>
-        <v-switch v-model="item.role" :label="item.role==1?'管理员':'普通用户'" disabled/>
+        <div>
+          角色:
+          <v-btn v-for="roleId in item.roleId" :key="roleId">
+            {{roles[roleId].name}}
+          </v-btn>
+        </div>
         <v-text-field v-model="item.createdAt" label="创建时间：" disabled/>
         <v-text-field v-model="item.updatedAt" label="上次更新时间：" disabled/>
         <v-layout class="my-4" row>
@@ -27,17 +31,8 @@
     data() {
       return {
         valid: false,
-        item: {
-          id: '1',
-          name: 'xxx',
-          nickname: 'xxxx',
-          password: 'xxx',
-          email: '',
-          phone: '',
-          role: '0',
-          createdAt: '',
-          updatedAt: '',
-        },
+        item: {},
+        roles: {},
         nameRules: [
           // v => !!v || "名称不能为空",
         ],
@@ -50,37 +45,31 @@
     methods: {
       submit() {
         console.log(this.item);
-        this.$http.post('/user/update', this.item).then(res => {
-          console.log(res)
-          sessionStorage.setItem('user', JSON.stringify(this.item));
-          this.item = JSON.parse(sessionStorage.getItem('user'));
-        })
+        this.$confirm('是否修改?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post('/user/update', this.item).then(res => {
+            sessionStorage.setItem('user', JSON.stringify(this.item));
+            this.item = JSON.parse(sessionStorage.getItem('user'));
+          })
+          this.$message({
+            type: 'success',
+            message: '修改成功!'
+          });
+        }).catch(() => {
+        });
       },
       clear() {
-        this.item = {
-          id: '',
-          name: '',
-          nickname: '',
-          password: '',
-          email: '',
-          phone: '',
-          createdAt: '',
-          updatedAt: '',
-        }
+        this.item.nickname = '';
+        this.item.email = '';
+        this.item.phone = '';
       }
     },
     mounted() {
-      // this.item = JSON.parse(sessionStorage.getItem('user'));
-      this.item = {
-        id: '',
-        name: '',
-        nickname: '',
-        password: '',
-        email: '',
-        phone: '',
-        createdAt: '',
-        updatedAt: '',
-      }
+      this.item = JSON.parse(sessionStorage.getItem('user'));
+      this.roles = JSON.parse(sessionStorage.getItem('roles'));
     }
   }
 </script>
