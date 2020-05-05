@@ -1,6 +1,13 @@
 <template>
   <v-card>
     <v-card-title>
+      <v-btn color="primary" @click="add">新增用户</v-btn>
+      <form enctype="multipart/form-data" action="" id="fileForm">
+        <input type="file" accept=".csv" id="exportUser" @change="exportUser" style="display: none"/>
+      </form>
+      <v-btn @click="multiAdd">批量导入</v-btn>
+      请下载导入模版<a @click="down">user.csv</a>
+      <v-spacer/>
       <v-flex xs3>
         <v-text-field label="输入关键字搜索" v-model.lazy="search" append-icon="search" hide-details></v-text-field>
       </v-flex>
@@ -15,37 +22,58 @@
         <td class="text-xs-center">{{ props.item.phone}}</td>
         <td class="text-xs-center">{{ props.item.email}}</td>
         <td class="text-xs-center">
-          <span v-for="roleId in props.item.roleId" :key="roleId">
-            {{roles[roleId].name}},
-          </span>
+          <v-btn v-for="roleId in props.item.roleId" :key="roleId">
+            {{roles[roleId].name}}
+          </v-btn>
         </td>
         <td class="text-xs-center">{{ props.item.ip}}</td>
         <td class="text-xs-center">{{ props.item.createdAt }}</td>
         <td class="text-xs-center">{{ props.item.updatedAt }}</td>
-        <td class="text-xs-center" :class="{weiyz:props.item.flag==0,yiyz:props.item.flag==1}">{{ props.item.flag == 0 ?
-          '未验证':'已验证' }}
-        </td>
-        <td class="justify-center layout px-0" v-if="props.item.flag == 0">
-          <v-btn icon @click="check(props.item)" style="color: green">
-            通过
+        <td class="justify-center layout px-0">
+          <v-btn icon @click="edit(props.item)">
+            <i class="el-icon-edit"/>
           </v-btn>
-          <v-btn icon @click="delete(props.item)" style="color: red">
+          <v-btn icon @click="delete(props.item)">
             <i class="el-icon-delete"/>
           </v-btn>
         </td>
       </template>
     </v-data-table>
+    <v-dialog max-width="500" v-model="show" persistent scrollable>
+      <v-card>
+        <!--对话框的标题-->
+        <v-toolbar dense dark color="primary">
+          <v-toolbar-title>{{isEdit ? '修改' : '新增'}}用户</v-toolbar-title>
+          <v-spacer/>
+          <!--关闭窗口的按钮-->
+          <v-btn icon @click="closeWindow">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <!--对话框的内容，表单-->
+        <v-card-text class="px-5" style="height:400px">
+          <file-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit"/>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
+  import FieldItem from "./FieldItem";
+
   export default {
-    name: 'check',
+    name: 'file',
+    components: {
+      'file-item': FieldItem
+    },
     data() {
       return {
         roles: {},
         pagination: {},
         search: '',
+        show: false,
+        isEdit: false,
         totalItems: 0,
         loading: false,
         headers: [{
@@ -94,11 +122,6 @@
           sortable: true,
           value: 'updatedAt',
         }, {
-          text: '是否验证',
-          align: 'center',
-          sortable: true,
-          value: 'flag',
-        }, {
           text: '操作',
           align: 'center',
           sortable: false,
@@ -122,34 +145,57 @@
         }).then(res => {
           this.items = res.data.items;
           this.totalItems = res.data.total;
-          console.log(res.data);
           this.loading = false;
         }).catch((err) => {
           console.log(err)
         });
       },
-      check(item) {
-        let data = {
-          'id': item.id,
-          'flag': item.flag
-        };
-        this.$confirm('确定通过?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http.post("/user/flag/check", data).then(res => {
-            if (res.data == true) {
-              item.flag = 1;
-            }
-          }).catch(() => {
+      add() {
+        this.show = true;
+        this.isEdit = false;
+        this.oldItem = null;
+      },
+      multiAdd() {
+        let exportUser = document.getElementById('exportUser');
+        exportUser.click();
+      },
+      exportUser() {
+        let exportUser = document.getElementById('exportUser');
+        let file = exportUser.files[0];
+        console.log(file);
+        let formData = new FormData();
+        formData.append("file", file);
+        axios.post('/user/multi', formData, {
+          headers: {"Content-Type": "multipart/form-data"},
+        }).then(res => {
+          this.getData();
+          this.$message({
+            message: '导入成功!',
+            type: 'success'
           });
-        }).catch(() => {
         });
       },
-      delete(item) {
-        console.log(item);
+      down() {
+        this.$http.get('/user/mb/down').then(res => {
+          console.log(res);
+          let blob = new Blob([res.data]);
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'user.csv';
+          link.click();
+        });
       },
+      edit(oldItem) {
+        this.isEdit = true;
+        this.oldItem = oldItem;
+        this.show = true;
+      },
+      delete(oldItem) {
+      },
+      closeWindow() {
+        this.getData();
+        this.show = false;
+      }
     },
     watch: {
       pagination: { // 监视pagination属性的变化
@@ -173,12 +219,5 @@
 
 </script>
 
-<style scoped>
-  .weiyz {
-    color: red;
-  }
-
-  .yiyz {
-    color: green;
-  }
+<style>
 </style>

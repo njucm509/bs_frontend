@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-btn color="primary" @click="add">新增角色</v-btn>
+      <v-btn color="primary" @click="add">新增权限</v-btn>
     </v-card-title>
     <v-data-table :headers="headers" :items="items" :pagination.sync="pagination" :total-items="totalItems"
                   :loading="loading"
@@ -10,16 +10,6 @@
         <td class="text-xs-center">{{ props.item.id }}</td>
         <td class="text-xs-center">{{ props.item.name }}</td>
         <td class="text-xs-center">{{ props.item.descriptions }}</td>
-        <td class="text-xs-center">
-          <v-btn v-for="id in props.item.permissionId" :key="id" style="display: inline-block">
-            {{permission[id].name}}
-          </v-btn>
-        </td>
-        <td class="text-xs-center">
-          <v-btn v-for="id in props.item.fieldId" :key="id">
-            {{fields[id].name}}
-          </v-btn>
-        </td>
         <td class="text-xs-center">{{ props.item.createdAt }}</td>
         <td class="text-xs-center">{{ props.item.updatedAt }}</td>
         <td class="justify-center layout px-0">
@@ -36,7 +26,7 @@
       <v-card>
         <!--对话框的标题-->
         <v-toolbar dense dark color="primary">
-          <v-toolbar-title>{{isEdit ? '修改' : '新增'}}角色</v-toolbar-title>
+          <v-toolbar-title>{{isEdit ? '修改' : '新增'}}权限</v-toolbar-title>
           <v-spacer/>
           <!--关闭窗口的按钮-->
           <v-btn icon @click="closeWindow">
@@ -45,8 +35,7 @@
         </v-toolbar>
         <!--对话框的内容，表单-->
         <v-card-text class="px-5" style="height:400px">
-          <role-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit" :permission="permission"
-                     :fields="fields"/>
+          <permission-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit"/>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -54,17 +43,15 @@
 </template>
 
 <script>
-  import roleItem from "./RoleItem";
+  import permissionItem from "./PermissionItem";
 
   export default {
     components: {
-      'role-item': roleItem,
+      'permission-item': permissionItem,
     },
     data() {
       return {
         roles: {},
-        permission: {},
-        fields: {},
         pagination: {
           rowsPerPage: 10
         },
@@ -79,7 +66,7 @@
           sortable: true,
           value: 'id',
         }, {
-          text: '角色名',
+          text: '权限名',
           align: 'center',
           sortable: true,
           value: 'name',
@@ -88,16 +75,6 @@
           align: 'center',
           sortable: false,
           value: 'descriptions',
-        }, {
-          text: '权限',
-          align: 'center',
-          sortable: false,
-          value: 'permissionId',
-        }, {
-          text: '字段',
-          align: 'center',
-          sortable: false,
-          value: 'fieldId',
         }, {
           text: '创建时间',
           align: 'center',
@@ -120,20 +97,14 @@
     },
     methods: {
       getData() {
-        this.$http.get('/auth/role/page', {
-          params: {
-            key: this.search, // 搜索条件
-            page: this.pagination.page, // 当前页
-            rows: this.pagination.rowsPerPage, // 每页大小
-            sortBy: this.pagination.sortBy, // 排序字段
-            desc: this.pagination.descending // 是否降序
-          }
-        }).then(res => {
-          this.items = res.data.items;
-          console.log(this.items);
-          this.totalItems = res.data.total;
+        let url = "/auth/permission/list";
+        this.$http.get(url).then(res => {
+          this.items = res.data;
+          this.totalItems = res.data.length;
           this.loading = false;
-        })
+        }).catch((err) => {
+          console.log(err)
+        });
       },
       add() {
         this.show = true;
@@ -146,9 +117,6 @@
         this.show = true;
       },
       delete(oldItem) {
-        this.$http.post('/auth/role/delete/' + oldItem.id).then(res => {
-          console.log(res);
-        })
       },
       closeWindow() {
         this.getData();
@@ -171,21 +139,6 @@
     },
     mounted() {
       this.getData();
-      let url = "/auth/permission/list";
-      this.$http.get(url).then(res => {
-        for (let i = 0; i < res.data.length; i++) {
-          this.permission[i + 1] = res.data[i];
-        }
-        this.loading = false;
-      }).catch((err) => {
-        console.log(err)
-      });
-      url = "/data/field/list";
-      this.$http.get(url).then(res => {
-        for (let i = 0; i < res.data.length; i++) {
-          this.fields[i + 1] = res.data[i];
-        }
-      }).catch();
       this.roles = JSON.parse(sessionStorage.getItem('roles'));
     }
   }

@@ -35,7 +35,7 @@
 
 <script>
   export default {
-    name: "UserItem",
+    name: "FileItem",
     props: {
       oldItem: {
         type: Object

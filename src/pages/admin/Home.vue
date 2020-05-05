@@ -88,13 +88,11 @@
       },
       item1() {
         let arr = this.$route.path.split("/");
-        console.log(this.$route.path)
         return this.menuMap[arr[2]].name
       },
       item2() {
         let arr = this.$route.path.split("/");
-        console.log(arr)
-        return this.menuMap[arr[2]][arr[2]]
+        return this.menuMap[arr[2]][arr[3]]
       }
     },
     created() {
@@ -107,7 +105,6 @@
           this.menuMap[p][item.path.slice(1)] = item.title
         })
       })
-      console.log(this.menuMap)
     },
     mounted() {
     }

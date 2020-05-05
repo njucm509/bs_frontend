@@ -1,6 +1,8 @@
 <template>
   <v-card>
     <v-card-title>
+      <v-btn color="primary" @click="add">新增字段</v-btn>
+      <v-spacer/>
       <v-flex xs3>
         <v-text-field label="输入关键字搜索" v-model.lazy="search" append-icon="search" hide-details></v-text-field>
       </v-flex>
@@ -11,41 +13,60 @@
       <template slot="items" slot-scope="props">
         <td class="text-xs-center">{{ props.item.id }}</td>
         <td class="text-xs-center">{{ props.item.name }}</td>
-        <td class="text-xs-center">{{ props.item.nickname }}</td>
-        <td class="text-xs-center">{{ props.item.phone}}</td>
-        <td class="text-xs-center">{{ props.item.email}}</td>
-        <td class="text-xs-center">
-          <span v-for="roleId in props.item.roleId" :key="roleId">
-            {{roles[roleId].name}},
-          </span>
+        <td class="text-xs-center">{{ props.item.sysName }}</td>
+        <td class="text-xs-center">{{ props.item.type }}</td>
+        <td class="text-xs-center">{{ props.item.descriptions }}</td>
+        <td class="text-xs-center" :class="{jz:props.item.status==0,qy:props.item.status==1}">{{ props.item.status == 1
+          ? '启用':'禁止'}}
         </td>
-        <td class="text-xs-center">{{ props.item.ip}}</td>
+        <td class="text-xs-center">{{ props.item.userId}}</td>
         <td class="text-xs-center">{{ props.item.createdAt }}</td>
         <td class="text-xs-center">{{ props.item.updatedAt }}</td>
-        <td class="text-xs-center" :class="{weiyz:props.item.flag==0,yiyz:props.item.flag==1}">{{ props.item.flag == 0 ?
-          '未验证':'已验证' }}
-        </td>
-        <td class="justify-center layout px-0" v-if="props.item.flag == 0">
-          <v-btn icon @click="check(props.item)" style="color: green">
-            通过
+        <td class="justify-center layout px-0">
+          <v-btn icon @click="edit(props.item)">
+            <i class="el-icon-edit"/>
           </v-btn>
-          <v-btn icon @click="delete(props.item)" style="color: red">
+          <v-btn icon @click="delete(props.item)">
             <i class="el-icon-delete"/>
           </v-btn>
         </td>
       </template>
     </v-data-table>
+    <v-dialog max-width="500" v-model="show" persistent scrollable>
+      <v-card>
+        <!--对话框的标题-->
+        <v-toolbar dense dark color="primary">
+          <v-toolbar-title>{{isEdit ? '修改' : '新增'}}字段</v-toolbar-title>
+          <v-spacer/>
+          <!--关闭窗口的按钮-->
+          <v-btn icon @click="closeWindow">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <!--对话框的内容，表单-->
+        <v-card-text class="px-5" style="height:400px">
+          <field-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit"/>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
+  import FieldItem from "./FieldItem";
+
   export default {
-    name: 'check',
+    name: 'field',
+    components: {
+      'field-item': FieldItem
+    },
     data() {
       return {
         roles: {},
         pagination: {},
         search: '',
+        show: false,
+        isEdit: false,
         totalItems: 0,
         loading: false,
         headers: [{
@@ -54,35 +75,35 @@
           sortable: true,
           value: 'id',
         }, {
-          text: '账号',
+          text: '字段名',
           align: 'center',
           sortable: true,
           value: 'name',
         }, {
-          text: '真实姓名',
+          text: '系统名',
           align: 'center',
           sortable: true,
-          value: 'nickname',
+          value: 'sysName',
         }, {
-          text: '手机号',
+          text: '类型',
+          align: 'center',
+          sortable: true,
+          value: 'type',
+        }, {
+          text: '描述信息',
+          align: 'center',
+          sortable: true,
+          value: 'descriptions',
+        }, {
+          text: '状态',
           align: 'center',
           sortable: false,
-          value: 'phone',
+          value: 'status',
         }, {
-          text: '邮箱',
+          text: '用户id',
           align: 'center',
           sortable: false,
-          value: 'email',
-        }, {
-          text: '角色',
-          align: 'center',
-          sortable: true,
-          value: 'roleId',
-        }, {
-          text: 'ip地址',
-          align: 'center',
-          sortable: true,
-          value: 'ip',
+          value: 'userId',
         }, {
           text: '创建时间',
           align: 'center',
@@ -93,11 +114,6 @@
           align: 'center',
           sortable: true,
           value: 'updatedAt',
-        }, {
-          text: '是否验证',
-          align: 'center',
-          sortable: true,
-          value: 'flag',
         }, {
           text: '操作',
           align: 'center',
@@ -110,7 +126,7 @@
     },
     methods: {
       getData() {
-        let url = "/user/page";
+        let url = "/data/field/page";
         this.$http.get(url, {
           params: {
             key: this.search, // 搜索条件
@@ -122,34 +138,27 @@
         }).then(res => {
           this.items = res.data.items;
           this.totalItems = res.data.total;
-          console.log(res.data);
           this.loading = false;
         }).catch((err) => {
           console.log(err)
         });
       },
-      check(item) {
-        let data = {
-          'id': item.id,
-          'flag': item.flag
-        };
-        this.$confirm('确定通过?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http.post("/user/flag/check", data).then(res => {
-            if (res.data == true) {
-              item.flag = 1;
-            }
-          }).catch(() => {
-          });
-        }).catch(() => {
-        });
+      add() {
+        this.show = true;
+        this.isEdit = false;
+        this.oldItem = null;
       },
-      delete(item) {
-        console.log(item);
+      edit(oldItem) {
+        this.isEdit = true;
+        this.oldItem = oldItem;
+        this.show = true;
       },
+      delete(oldItem) {
+      },
+      closeWindow() {
+        this.getData();
+        this.show = false;
+      }
     },
     watch: {
       pagination: { // 监视pagination属性的变化
@@ -174,11 +183,11 @@
 </script>
 
 <style scoped>
-  .weiyz {
-    color: red;
+  .qy {
+    color: green;
   }
 
-  .yiyz {
-    color: green;
+  .jz {
+    color: red;
   }
 </style>

@@ -21,8 +21,12 @@
         <td class="text-xs-center">{{ props.item.nickname }}</td>
         <td class="text-xs-center">{{ props.item.phone}}</td>
         <td class="text-xs-center">{{ props.item.email}}</td>
+        <td class="text-xs-center">
+          <v-btn v-for="roleId in props.item.roleId" :key="roleId">
+            {{roles[roleId].name}}
+          </v-btn>
+        </td>
         <td class="text-xs-center">{{ props.item.ip}}</td>
-        <td class="text-xs-center">{{ props.item.role}}</td>
         <td class="text-xs-center">{{ props.item.createdAt }}</td>
         <td class="text-xs-center">{{ props.item.updatedAt }}</td>
         <td class="justify-center layout px-0">
@@ -65,6 +69,7 @@
     },
     data() {
       return {
+        roles: {},
         pagination: {},
         search: '',
         show: false,
@@ -100,7 +105,12 @@
           text: '角色',
           align: 'center',
           sortable: true,
-          value: 'role',
+          value: 'roleId',
+        }, {
+          text: 'ip地址',
+          align: 'center',
+          sortable: true,
+          value: 'ip',
         }, {
           text: '创建时间',
           align: 'center',
@@ -111,6 +121,10 @@
           align: 'center',
           sortable: true,
           value: 'updatedAt',
+        }, {
+          text: '操作',
+          align: 'center',
+          sortable: false,
         },
         ],
         items: [],
@@ -162,7 +176,7 @@
         });
       },
       down() {
-        this.$http.get('/user/down').then(res => {
+        this.$http.get('/user/mb/down').then(res => {
           console.log(res);
           let blob = new Blob([res.data]);
           let link = document.createElement('a');
@@ -199,6 +213,7 @@
     },
     mounted() {
       this.getData();
+      this.roles = JSON.parse(sessionStorage.getItem('roles'));
     }
   }
 

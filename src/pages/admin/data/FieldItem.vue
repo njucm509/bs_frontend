@@ -1,30 +1,18 @@
 <template>
   <v-form v-model="valid" ref="myForm">
-    <v-text-field v-model="item.name" label="账号：" required :rules="accountRules"/>
-    <v-text-field v-model="item.nickname" label="真实姓名：" required :rules="nameRules"/>
-    <v-text-field v-model="item.password" label="密码：" required :rules="pwdRules"/>
-    <v-text-field v-model="item.phone" label="手机号：" required/>
-    <v-text-field v-model="item.email" label="邮箱：" required/>
-    角色:
-    <!--    <v-btn v-if="isEdit" v-for="roleId in item.roleId" :key="roleId">-->
-    <!--      {{roles[roleId].name}}-->
-    <el-select v-if="isEdit" v-model="item.roleId" multiple placeholder="请选择" style="width: 100%">
+    <v-text-field v-model="item.name" label="字段名：" required :rules="nameRules"/>
+    <v-text-field v-model="item.sysName" label="系统名：" required :rules="nameRules"/>
+    字段类型:
+    <el-select v-model="item.type" placeholder="请选择" style="width: 100%">
       <el-option
-        v-for="item in roles"
-        :key="item.value"
+        v-for="item in this.fieldType"
+        :key="item.name"
         :label="item.name"
-        :value="item.id">
+        :value="item.name">
       </el-option>
     </el-select>
-    <!--    </v-btn>-->
-    <el-select v-if="!isEdit" v-model="item.roleId" multiple placeholder="请选择" style="width: 100%" :disabled="isEdit">
-      <el-option
-        v-for="item in roles"
-        :key="item.value"
-        :label="item.name"
-        :value="item.id">
-      </el-option>
-    </el-select>
+    <v-textarea v-model="item.descriptions" label="字段描述：" required/>
+    <v-switch v-model="item.status" :label="item.status == 1?'启用':'禁止'" required/>
     <v-layout class="my-4" row>
       <v-spacer/>
       <v-btn :disabled="!valid" @click="submit" color="primary">提交</v-btn>
@@ -35,7 +23,7 @@
 
 <script>
   export default {
-    name: "UserItem",
+    name: "FieldItem",
     props: {
       oldItem: {
         type: Object
@@ -46,16 +34,22 @@
     },
     data() {
       return {
+        user: '',
         roles: {},
+        fieldType: [
+          {name: "字符串"},
+          {name: "数字"},
+          {name: "文本"},
+        ],
         valid: false,
         item: {
           id: '',
           name: '',
-          nickname: '',
-          password: '',
-          phone: '',
-          email: '',
-          roleId: [],
+          sysName: '',
+          type: '',
+          descriptions: '',
+          status: '1',
+          userId: '',
           createdAt: '',
           updatedAt: '',
         },
@@ -75,10 +69,11 @@
     methods: {
       submit() {
         if (this.isEdit) {
-          let url = '/user/update';
+          let url = '/data/field/update';
         } else {
-          let url = '/user/create';
+          let url = '/data/field/create';
         }
+        this.item.id = this.user.id;
         this.$http.post(url, this.item).then(res => {
           console.log(res)
           this.$message.success('提交成功!');
@@ -90,11 +85,11 @@
         this.item = {
           id: '',
           name: '',
-          nickname: '',
-          password: '',
-          phone: '',
-          email: '',
-          roleId: [],
+          sysName: '',
+          type: '',
+          descriptions: '',
+          status: '1',
+          userId: '',
           createdAt: '',
           updatedAt: '',
         }
@@ -111,11 +106,11 @@
             this.item = {
               id: '',
               name: '',
-              nickname: '',
-              password: '',
-              phone: '',
-              email: '',
-              roleId: [],
+              sysName: '',
+              type: '',
+              descriptions: '',
+              status: '1',
+              userId: '',
               createdAt: '',
               updatedAt: '',
             }
@@ -126,6 +121,7 @@
     },
     mounted() {
       this.roles = JSON.parse(sessionStorage.getItem('roles'));
+      this.user = JSON.parse(sessionStorage.getItem('user'));
     }
   }
 </script>

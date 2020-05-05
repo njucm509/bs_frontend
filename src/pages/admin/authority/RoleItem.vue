@@ -1,25 +1,43 @@
 <template>
   <v-form v-model="valid" ref="myForm">
-    <v-text-field v-model="item.name" label="账号：" required :rules="accountRules"/>
-    <v-text-field v-model="item.nickname" label="真实姓名：" required :rules="nameRules"/>
-    <v-text-field v-model="item.password" label="密码：" required :rules="pwdRules"/>
-    <v-text-field v-model="item.phone" label="手机号：" required/>
-    <v-text-field v-model="item.email" label="邮箱：" required/>
-    角色:
-    <!--    <v-btn v-if="isEdit" v-for="roleId in item.roleId" :key="roleId">-->
-    <!--      {{roles[roleId].name}}-->
-    <el-select v-if="isEdit" v-model="item.roleId" multiple placeholder="请选择" style="width: 100%">
+    <v-text-field v-model="item.name" label="角色名：" required :rules="nameRules"/>
+    <v-text-field v-model="item.slug" label="系统别名：" required :rules="nameRules"/>
+    <v-text-field v-model="item.descriptions" label="角色描述："/>
+    权限:
+    <!--    <v-btn v-if="isEdit" v-for="id in item.permissionId" :key="id">-->
+    <!--      {{permissions[id].name}}-->
+    <el-select v-if="isEdit" v-model="item.permissionId" multiple placeholder="请选择" style="width: 100%">
       <el-option
-        v-for="item in roles"
+        v-for="item in permission"
         :key="item.value"
         :label="item.name"
         :value="item.id">
       </el-option>
     </el-select>
     <!--    </v-btn>-->
-    <el-select v-if="!isEdit" v-model="item.roleId" multiple placeholder="请选择" style="width: 100%" :disabled="isEdit">
+    <el-select v-if="!isEdit" v-model="item.permissionId" multiple placeholder="请选择" style="width: 100%"
+               :disabled="isEdit">
       <el-option
-        v-for="item in roles"
+        v-for="item in permission"
+        :key="item.value"
+        :label="item.name"
+        :value="item.id">
+      </el-option>
+    </el-select>
+    字段:
+    <el-select v-if="isEdit" v-model="item.fieldId" multiple placeholder="请选择" style="width: 100%">
+      <el-option
+        v-for="item in fields"
+        :key="item.value"
+        :label="item.name"
+        :value="item.id">
+      </el-option>
+    </el-select>
+    <!--    </v-btn>-->
+    <el-select v-if="!isEdit" v-model="item.fieldId" multiple placeholder="请选择" style="width: 100%"
+               :disabled="isEdit">
+      <el-option
+        v-for="item in fields"
         :key="item.value"
         :label="item.name"
         :value="item.id">
@@ -35,50 +53,44 @@
 
 <script>
   export default {
-    name: "UserItem",
+    name: "RoleItem",
     props: {
       oldItem: {
         type: Object
       },
       isEdit: {
         type: Boolean
-      }
+      },
+      permission: {},
+      fields: {},
     },
     data() {
       return {
         roles: {},
         valid: false,
+        permissions: this.permission,
         item: {
           id: '',
           name: '',
-          nickname: '',
-          password: '',
-          phone: '',
-          email: '',
-          roleId: [],
+          slug: '',
+          descriptions: '',
+          permissionId: [],
+          fieldId: [],
           createdAt: '',
           updatedAt: '',
         },
         nameRules: [
           v => !!v || "名称不能为空",
         ],
-        accountRules: [
-          v => !!v || "账号不能为空",
-          v => v.length > 4 || "账号至少5位"
-        ],
-        pwdRules: [
-          v => !!v || "密码不能为空",
-          v => v.length > 4 || "密码至少5位"
-        ]
       };
     },
     methods: {
       submit() {
+        let url = '/auth/role/create';
         if (this.isEdit) {
-          let url = '/user/update';
-        } else {
-          let url = '/user/create';
+          url = '/auth/role/update';
         }
+        console.log(this.item);
         this.$http.post(url, this.item).then(res => {
           console.log(res)
           this.$message.success('提交成功!');
@@ -90,11 +102,10 @@
         this.item = {
           id: '',
           name: '',
-          nickname: '',
-          password: '',
-          phone: '',
-          email: '',
-          roleId: [],
+          slug: '',
+          descriptions: '',
+          permissionId: [],
+          fieldId: [],
           createdAt: '',
           updatedAt: '',
         }
@@ -111,11 +122,10 @@
             this.item = {
               id: '',
               name: '',
-              nickname: '',
-              password: '',
-              phone: '',
-              email: '',
-              roleId: [],
+              slug: '',
+              descriptions: '',
+              permissionId: [],
+              fieldId: [],
               createdAt: '',
               updatedAt: '',
             }
