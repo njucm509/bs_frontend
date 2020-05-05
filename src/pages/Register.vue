@@ -20,12 +20,14 @@
         <el-input v-model="register_form.email"></el-input>
       </el-form-item>
       <el-form-item label="角色" required>
-        <el-radio-group v-model="register_form.roleId">
-          <el-radio label="1">系统管理员</el-radio>
-          <el-radio label="2">监管者</el-radio>
-          <el-radio label="3">数据提供者</el-radio>
-          <el-radio label="4">数据请求者</el-radio>
-        </el-radio-group>
+        <el-select v-model="register_form.roleId" multiple placeholder="请选择" style="width: 100%">
+          <el-option
+            v-for="item in roles"
+            :key="item.value"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button @click="submit('registerForm')" type="primary" style="width:100%">注册</el-button>
@@ -69,6 +71,7 @@
         }, 1000)
       };
       return {
+        roles: {},
         register_form: {
           name: '',
           nickname: '',
@@ -144,7 +147,6 @@
             this.$http.post('/user/create', this.register_form).then((res => {
               console.log(res.data);
               let user = res.data;
-              sessionStorage.setItem('user', JSON.stringify(user));
               this.$message({
                 message: '注册成功',
                 type: 'success'
@@ -156,6 +158,15 @@
           }
         })
       }
+    },
+    mounted() {
+      this.$http.get('/auth/role/list').then((res) => {
+        let roles = {};
+        for (let i = 0; i < res.data.length; i++) {
+          roles[i + 1] = res.data[i];
+        }
+        this.roles = roles;
+      });
     }
   }
 </script>
