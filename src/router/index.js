@@ -25,9 +25,11 @@ const router = new Router({
       children: [
         route("index/dashboard", "/admin/Dashboard", "Dashboard"),
         route("data/info", '/admin/data/info', "dataInfo"),
+        route("data/field", '/admin/data/field', "dataField"),
+        route("data/file", '/admin/data/file', "dataFile"),
         route("user/check", '/admin/user/check', "userCheck"),
         route("user/list", '/admin/user/list', "userList"),
-        route("authority/list", '/admin/authority/list', "List"),
+        route("authority/permission", '/admin/authority/permission', "permissionList"),
         route("authority/member", '/admin/authority/member', "member"),
         route("authority/role", '/admin/authority/role', "role"),
         route("log/record", '/admin/log/record', "logRecord"),

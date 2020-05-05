@@ -22,6 +22,8 @@ const menus = [
     path: "/data",
     items: [
       {title: "数据信息", path: "/info"},
+      {title: "数据字段", path: "/field"},
+      {title: "文件信息", path: "/file"},
     ]
   },
   {
@@ -29,7 +31,7 @@ const menus = [
     title: "权限管理",
     path: "/authority",
     items: [
-      {title: "权限管理", path: "/list"},
+      {title: "权限管理", path: "/permission"},
       {title: "角色管理", path: "/role"},
       {title: "人员管理", path: "/member"}
     ]
