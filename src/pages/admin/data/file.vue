@@ -1,12 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-btn color="primary" @click="add">新增用户</v-btn>
-      <form enctype="multipart/form-data" action="" id="fileForm">
-        <input type="file" accept=".csv" id="exportUser" @change="exportUser" style="display: none"/>
-      </form>
-      <v-btn @click="multiAdd">批量导入</v-btn>
-      请下载导入模版<a @click="down">user.csv</a>
+      <v-btn color="primary" @click="add">上传文件</v-btn>
       <v-spacer/>
       <v-flex xs3>
         <v-text-field label="输入关键字搜索" v-model.lazy="search" append-icon="search" hide-details></v-text-field>
@@ -18,19 +13,14 @@
       <template slot="items" slot-scope="props">
         <td class="text-xs-center">{{ props.item.id }}</td>
         <td class="text-xs-center">{{ props.item.name }}</td>
-        <td class="text-xs-center">{{ props.item.nickname }}</td>
-        <td class="text-xs-center">{{ props.item.phone}}</td>
-        <td class="text-xs-center">{{ props.item.email}}</td>
-        <td class="text-xs-center">
-          <v-btn v-for="roleId in props.item.roleId" :key="roleId">
-            {{roles[roleId].name}}
-          </v-btn>
-        </td>
-        <td class="text-xs-center">{{ props.item.ip}}</td>
+        <td class="text-xs-center">{{ props.item.userId }}</td>
         <td class="text-xs-center">{{ props.item.createdAt }}</td>
         <td class="text-xs-center">{{ props.item.updatedAt }}</td>
         <td class="justify-center layout px-0">
           <v-btn icon @click="edit(props.item)">
+            <i class="el-icon-edit"/>
+          </v-btn>
+          <v-btn icon @click="down(props.item)">
             <i class="el-icon-edit"/>
           </v-btn>
           <v-btn icon @click="delete(props.item)">
@@ -82,35 +72,15 @@
           sortable: true,
           value: 'id',
         }, {
-          text: '账号',
+          text: '文件名',
           align: 'center',
           sortable: true,
           value: 'name',
         }, {
-          text: '真实姓名',
+          text: '用户id',
           align: 'center',
           sortable: true,
-          value: 'nickname',
-        }, {
-          text: '手机号',
-          align: 'center',
-          sortable: false,
-          value: 'phone',
-        }, {
-          text: '邮箱',
-          align: 'center',
-          sortable: false,
-          value: 'email',
-        }, {
-          text: '角色',
-          align: 'center',
-          sortable: true,
-          value: 'roleId',
-        }, {
-          text: 'ip地址',
-          align: 'center',
-          sortable: true,
-          value: 'ip',
+          value: 'userId',
         }, {
           text: '创建时间',
           align: 'center',
@@ -133,7 +103,7 @@
     },
     methods: {
       getData() {
-        let url = "/user/page";
+        let url = "/data/file/page";
         this.$http.get(url, {
           params: {
             key: this.search, // 搜索条件
@@ -155,28 +125,8 @@
         this.isEdit = false;
         this.oldItem = null;
       },
-      multiAdd() {
-        let exportUser = document.getElementById('exportUser');
-        exportUser.click();
-      },
-      exportUser() {
-        let exportUser = document.getElementById('exportUser');
-        let file = exportUser.files[0];
-        console.log(file);
-        let formData = new FormData();
-        formData.append("file", file);
-        axios.post('/user/multi', formData, {
-          headers: {"Content-Type": "multipart/form-data"},
-        }).then(res => {
-          this.getData();
-          this.$message({
-            message: '导入成功!',
-            type: 'success'
-          });
-        });
-      },
       down() {
-        this.$http.get('/user/mb/down').then(res => {
+        this.$http.get('').then(res => {
           console.log(res);
           let blob = new Blob([res.data]);
           let link = document.createElement('a');
