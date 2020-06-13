@@ -8,7 +8,16 @@
         v-for="item in this.fieldType"
         :key="item.name"
         :label="item.name"
-        :value="item.name">
+        :value="item.value">
+      </el-option>
+    </el-select>
+    属性类型:
+    <el-select v-model="item.typeId" placeholder="请选择" style="width: 100%">
+      <el-option
+        v-for="item in this.type"
+        :key="item.id"
+        :label="item.name"
+        :value="item.id">
       </el-option>
     </el-select>
     <v-textarea v-model="item.descriptions" label="字段描述：" required/>
@@ -30,6 +39,9 @@
       },
       isEdit: {
         type: Boolean
+      },
+      type: {
+        type: Array
       }
     },
     data() {
@@ -37,9 +49,22 @@
         user: '',
         roles: {},
         fieldType: [
-          {name: "字符串"},
-          {name: "数字"},
-          {name: "文本"},
+          {
+            name: "字符串",
+            value: "varchar(50)"
+          },
+          {
+            name: "数字",
+            value: "int(11)"
+          },
+          {
+            name: "文本",
+            value: "text"
+          },
+          // {
+          //   name: "日期",
+          //   value: "datetime"
+          // }
         ],
         valid: false,
         item: {
@@ -47,6 +72,7 @@
           name: '',
           sysName: '',
           type: '',
+          typeId: '4',
           descriptions: '',
           status: '1',
           userId: '',
@@ -68,12 +94,11 @@
     },
     methods: {
       submit() {
+        let url = '/data/field/create';
         if (this.isEdit) {
-          let url = '/data/field/update';
-        } else {
-          let url = '/data/field/create';
+          url = '/data/field/update';
         }
-        this.item.id = this.user.id;
+        this.item.userId = this.user.id;
         this.$http.post(url, this.item).then(res => {
           console.log(res)
           this.$message.success('提交成功!');
@@ -87,6 +112,7 @@
           name: '',
           sysName: '',
           type: '',
+          typeId: '4',
           descriptions: '',
           status: '1',
           userId: '',
@@ -96,18 +122,18 @@
       }
     },
     watch: {
-      oldItem: { // 监控item的变化
+      oldItem: {
         handler(val) {
           if (val) {
             // 注意不要直接复制，否则这边的修改会影响到父组件的数据，copy属性即可
             this.item = JSON.parse(JSON.stringify(val));
           } else {
-            // 为空，初始化brand
             this.item = {
               id: '',
               name: '',
               sysName: '',
               type: '',
+              typeId: '4',
               descriptions: '',
               status: '1',
               userId: '',

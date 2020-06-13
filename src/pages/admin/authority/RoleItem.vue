@@ -3,6 +3,17 @@
     <v-text-field v-model="item.name" label="角色名：" required :rules="nameRules"/>
     <v-text-field v-model="item.slug" label="系统别名：" required :rules="nameRules"/>
     <v-text-field v-model="item.descriptions" label="角色描述："/>
+    <v-switch v-model="isRoot" label="是否根角色"/>
+    <div v-if="isRoot === false">选择父角色:</div>
+    <el-select v-if="isRoot === false" v-model="item.parentId" style="width: 100%">
+      <el-option
+        v-for="item in rootRoles"
+        :key="item.id"
+        :label="item.name"
+        :value="item.id">
+      </el-option>
+    </el-select>
+    <br>
     权限:
     <!--    <v-btn v-if="isEdit" v-for="id in item.permissionId" :key="id">-->
     <!--      {{permissions[id].name}}-->
@@ -61,18 +72,24 @@
       isEdit: {
         type: Boolean
       },
+      root: {
+        type: Boolean
+      },
       permission: {},
       fields: {},
     },
     data() {
       return {
         roles: {},
+        isRoot: true,
+        rootRoles: [],
         valid: false,
         permissions: this.permission,
         item: {
           id: '',
           name: '',
           slug: '',
+          parentId: 1,
           descriptions: '',
           permissionId: [],
           fieldId: [],
@@ -92,7 +109,6 @@
         }
         console.log(this.item);
         this.$http.post(url, this.item).then(res => {
-          console.log(res)
           this.$message.success('提交成功!');
           this.$emit('close');
           this.clear();
@@ -103,17 +119,26 @@
           id: '',
           name: '',
           slug: '',
+          parentId: 1,
           descriptions: '',
           permissionId: [],
           fieldId: [],
           createdAt: '',
           updatedAt: '',
         }
+      },
+      getRootRole() {
+        this.$http.get('/auth/role/root/list').then(res => {
+          this.rootRoles = res.data;
+        })
       }
     },
     watch: {
       oldItem: { // 监控item的变化
         handler(val) {
+          if (val.parentId != 0) {
+            this.isRoot = false;
+          }
           if (val) {
             // 注意不要直接复制，否则这边的修改会影响到父组件的数据，copy属性即可
             this.item = JSON.parse(JSON.stringify(val));
@@ -123,15 +148,23 @@
               id: '',
               name: '',
               slug: '',
+              parentId: 1,
               descriptions: '',
               permissionId: [],
               fieldId: [],
               createdAt: '',
               updatedAt: '',
-            }
+            };
           }
         },
         deep: true
+      },
+      isRoot: {
+        handler(isRoot) {
+          if (!isRoot) {
+            this.getRootRole();
+          }
+        }
       }
     },
     mounted() {

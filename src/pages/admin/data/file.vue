@@ -17,13 +17,13 @@
         <td class="text-xs-center">{{ props.item.createdAt }}</td>
         <td class="text-xs-center">{{ props.item.updatedAt }}</td>
         <td class="justify-center layout px-0">
-          <v-btn icon @click="edit(props.item)">
-            <i class="el-icon-edit"/>
-          </v-btn>
-          <v-btn icon @click="down(props.item)">
-            <i class="el-icon-edit"/>
-          </v-btn>
-          <v-btn icon @click="delete(props.item)">
+<!--          <v-btn icon @click="edit(props.item)">-->
+<!--            <i class="el-icon-edit"/>-->
+<!--          </v-btn>-->
+<!--          <v-btn icon @click="down(props.item)">-->
+<!--            <i class="el-icon-edit"/>-->
+<!--          </v-btn>-->
+          <v-btn icon @click="remove(props.item)">
             <i class="el-icon-delete"/>
           </v-btn>
         </td>
@@ -140,7 +140,14 @@
         this.oldItem = oldItem;
         this.show = true;
       },
-      delete(oldItem) {
+      remove(file) {
+        console.log(file);
+        this.$http.post('/data/file/delete', file).then(res => {
+          console.log(res);
+          if (res.data === true) {
+            this.getData();
+          }
+        });
       },
       closeWindow() {
         this.getData();

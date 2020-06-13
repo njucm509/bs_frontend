@@ -1,14 +1,14 @@
 <template>
   <v-form v-model="valid" ref="myForm">
-    <v-text-field v-model="item.name" label="账号：" required :rules="accountRules"/>
-    <v-text-field v-model="item.nickname" label="真实姓名：" required :rules="nameRules"/>
-    <v-text-field v-model="item.password" label="密码：" required :rules="pwdRules"/>
-    <v-text-field v-model="item.phone" label="手机号：" required/>
-    <v-text-field v-model="item.email" label="邮箱：" required/>
+    <v-text-field v-model="item.name" label="账号：" required :rules="accountRules" :disabled="isDetail"/>
+    <v-text-field v-model="item.nickname" label="真实姓名：" required :rules="nameRules" :disabled="isDetail"/>
+    <v-text-field v-model="item.password" label="密码：" required :rules="pwdRules" v-if="!isDetail" :disabled="isDetail"/>
+    <v-text-field v-model="item.phone" label="手机号：" required :disabled="isDetail"/>
+    <v-text-field v-model="item.email" label="邮箱：" required :disabled="isDetail"/>
     角色:
     <!--    <v-btn v-if="isEdit" v-for="roleId in item.roleId" :key="roleId">-->
     <!--      {{roles[roleId].name}}-->
-    <el-select v-if="isEdit" v-model="item.roleId" multiple placeholder="请选择" style="width: 100%">
+    <el-select v-if="isEdit" v-model="item.roleId" multiple placeholder="请选择" style="width: 100%" :disabled="isDetail">
       <el-option
         v-for="item in roles"
         :key="item.value"
@@ -17,7 +17,8 @@
       </el-option>
     </el-select>
     <!--    </v-btn>-->
-    <el-select v-if="!isEdit" v-model="item.roleId" multiple placeholder="请选择" style="width: 100%" :disabled="isEdit">
+    <el-select v-if="!isEdit" v-model="item.roleId" multiple placeholder="请选择" style="width: 100%"
+               :disabled="isEdit||isDetail">
       <el-option
         v-for="item in roles"
         :key="item.value"
@@ -25,10 +26,10 @@
         :value="item.id">
       </el-option>
     </el-select>
-    <v-layout class="my-4" row>
+    <v-layout class="my-4" row v-if="!isDetail">
       <v-spacer/>
-      <v-btn :disabled="!valid" @click="submit" color="primary">提交</v-btn>
-      <v-btn @click="clear">重置</v-btn>
+      <v-btn :disabled="!valid||isDetail" @click="submit" color="primary">提交</v-btn>
+      <v-btn @click="clear" :disabled="isDetail">重置</v-btn>
     </v-layout>
   </v-form>
 </template>
@@ -41,6 +42,9 @@
         type: Object
       },
       isEdit: {
+        type: Boolean
+      },
+      isDetail: {
         type: Boolean
       }
     },
@@ -74,15 +78,17 @@
     },
     methods: {
       submit() {
+        let url = '/user/create';
+
         if (this.isEdit) {
-          let url = '/user/update';
-        } else {
-          let url = '/user/create';
+          url = '/user/update';
         }
+
         this.$http.post(url, this.item).then(res => {
           console.log(res)
           this.$message.success('提交成功!');
           this.$emit('close');
+          this.$emit('getData');
           this.clear();
         });
       },

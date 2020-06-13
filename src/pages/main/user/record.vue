@@ -38,7 +38,7 @@
         </v-toolbar>
         <!--对话框的内容，表单-->
         <v-card-text class="px-5" style="height:400px">
-          <user-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit"/>
+<!--          <user-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit"/>-->
         </v-card-text>
       </v-card>
     </v-dialog>

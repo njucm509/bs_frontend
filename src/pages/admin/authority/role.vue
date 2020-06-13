@@ -10,15 +10,12 @@
         <td class="text-xs-center">{{ props.item.id }}</td>
         <td class="text-xs-center">{{ props.item.name }}</td>
         <td class="text-xs-center">{{ props.item.descriptions }}</td>
+        <td class="text-xs-center">{{ props.item.parentId == 0 ? '根权限': roles[props.item.parentId].name}}</td>
         <td class="text-xs-center">
-          <v-btn v-for="id in props.item.permissionId" :key="id" style="display: inline-block">
-            {{permission[id].name}}
-          </v-btn>
+          <v-btn @click="permissionDetail(props.item.permissionId)">权限详情</v-btn>
         </td>
         <td class="text-xs-center">
-          <v-btn v-for="id in props.item.fieldId" :key="id">
-            {{fields[id].name}}
-          </v-btn>
+          <v-btn @click="fieldDetail(props.item.fieldId)">字段详情</v-btn>
         </td>
         <td class="text-xs-center">{{ props.item.createdAt }}</td>
         <td class="text-xs-center">{{ props.item.updatedAt }}</td>
@@ -44,9 +41,49 @@
           </v-btn>
         </v-toolbar>
         <!--对话框的内容，表单-->
-        <v-card-text class="px-5" style="height:400px">
+        <v-card-text class="px-5" style="height:800px">
           <role-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit" :permission="permission"
                      :fields="fields"/>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog max-width="500" v-model="showFieldDetail" persistent scrollable>
+      <v-card>
+        <!--对话框的标题-->
+        <v-toolbar dense dark color="primary">
+          <v-toolbar-title>字段详情</v-toolbar-title>
+          <v-spacer/>
+          <!--关闭窗口的按钮-->
+          <v-btn icon @click="closeWindow">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <!--对话框的内容，表单-->
+        <v-card-text class="px-5" style="height:400px">
+          <v-btn v-for="id in showFieldDetailItem" :key="id">
+            {{fields[id].name}}
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog max-width="300" v-model="showPermissionDetail" persistent scrollable>
+      <v-card>
+        <!--对话框的标题-->
+        <v-toolbar dense dark color="primary">
+          <v-toolbar-title>权限详情</v-toolbar-title>
+          <v-spacer/>
+          <!--关闭窗口的按钮-->
+          <v-btn icon @click="closeWindow">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <!--对话框的内容，表单-->
+        <v-card-text class="px-5" style="height:400px">
+          <v-btn v-for="id in showPermissionDetailItem" :key="id" style="display: inline-block">
+            {{permission[id].name}}
+          </v-btn>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -70,6 +107,10 @@
         },
         search: '',
         totalItems: 0,
+        showFieldDetail: false,
+        showFieldDetailItem: [],
+        showPermissionDetail: false,
+        showPermissionDetailItem: [],
         show: false,
         isEdit: false,
         loading: false,
@@ -88,6 +129,11 @@
           align: 'center',
           sortable: false,
           value: 'descriptions',
+        }, {
+          text: '父权限',
+          align: 'center',
+          sortable: false,
+          value: 'parentId',
         }, {
           text: '权限',
           align: 'center',
@@ -153,6 +199,16 @@
       closeWindow() {
         this.getData();
         this.show = false;
+        this.showFieldDetail = false;
+        this.showPermissionDetail = false;
+      },
+      fieldDetail(fieldId) {
+        this.showFieldDetailItem = fieldId;
+        this.showFieldDetail = true;
+      },
+      permissionDetail(permissionId) {
+        this.showPermissionDetailItem = permissionId;
+        this.showPermissionDetail = true;
       }
     },
     watch: {

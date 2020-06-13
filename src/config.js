@@ -7,7 +7,7 @@ const config = {
     http: false // http request log
   },
   api: `${baseUrl}/api`,
-  uploadFile: 'http://localhost:8082/upload/file',
+  uploadFile: 'http://localhost:10001/api/data/file/hdfs/upload',
   theme:{
     primary: "#2196F3",
     secondary: "#455A64",

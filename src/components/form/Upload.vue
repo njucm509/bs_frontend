@@ -21,11 +21,7 @@
     props: ['options', 'auto', 'attrs',],
     methods: {
       onFileSuccess(rootFile, file, response, chunk) {
-        console.log(rootFile)
-        console.log(file)
-        console.log(response)
-        console.log(chunk)
-        // this.$emit('onFileSuccess');
+        this.$emit('onFileSuccess', [rootFile, file, response, chunk]);
       },
     }
   }

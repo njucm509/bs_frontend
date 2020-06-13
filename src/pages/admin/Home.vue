@@ -8,7 +8,7 @@
           <v-list-tile avatar>
             <v-list-tile-avatar> <img src="../../assets/logo.png"> </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>frontend</v-list-tile-title>
+              <v-list-tile-title>后台管理系统</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>

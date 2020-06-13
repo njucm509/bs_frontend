@@ -50,6 +50,12 @@ const router = new Router({
           redirect: 'index/user/info',
           children: [
             route("info", "/main/user/info", "info"),
+            route("released", "/main/user/released", "released"),
+            route("releasedData", "/main/user/releasedData", "releasedData"),
+            route("releasedAuth", "/main/user/releasedAuth", "releasedAuth"),
+            route("releasedCheck", "/main/user/releasedCheck", "releasedCheck"),
+            route("releasedApply", "/main/user/releasedApply", "releasedApply"),
+            route("file", "/main/user/file", "file"),
             route("data", "/main/user/data", "data"),
             route("task", "/main/user/task", "task"),
             route("record", "/main/user/record", "record"),
@@ -70,7 +76,45 @@ router.beforeEach((to, from, next) => {
     } else {
       next();
     }
-  } else if (to.path.startsWith('/index/') || to.path.startsWith('/admin')) {
+  } else if (to.path.startsWith('/admin')) {
+    let user = JSON.parse(sessionStorage.getItem('user'));
+    if (user) {
+      let role = user.roleId;
+
+      if (!(role instanceof Array)) {
+        next({
+          path: 'index'
+        });
+      }
+
+      if (role) {
+        role = role.toString();
+      } else {
+        next({
+          path: 'index'
+        });
+        return;
+      }
+
+      if (role.indexOf('1') >= 0) {
+        next();
+        return;
+      }
+
+      if (role.indexOf('2') >= 0) {
+        next();
+        return;
+      }
+
+      next({
+        path: 'index'
+      });
+    } else {
+      next({
+        path: 'index'
+      });
+    }
+  } else if (to.path.startsWith('/index/')) {
     if (sessionStorage.getItem('user')) {
       next();
     } else {
@@ -81,5 +125,5 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
-})
+});
 export default router

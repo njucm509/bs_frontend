@@ -21,7 +21,7 @@
         <li role="presentation" id="login"><a href="/login" v-if="this.show">登陆</a></li>
         <li role="presentation" id="register"><a href="/register" v-if="this.show">注册</a></li>
         <li role="presentation" id="admin"><a href="/admin"
-                                              v-if="this.user!=null&&this.user.hasOwnProperty('roleId') != null">进入管理员界面</a>
+                                              v-if="this.user!=null&&checkAdmin(this.user.roleId)">进入管理员界面</a>
         </li>
       </div>
     </div>
@@ -66,6 +66,21 @@
           });
         }).catch(() => {
         });
+      },
+      checkAdmin(role) {
+        if (!(role instanceof Array)) {
+          return false;
+        }
+
+        if (role.toString().indexOf('1') >= 0) {
+          return true;
+        }
+
+        if (role.toString().indexOf('2') >= 0) {
+          return true
+        }
+
+        return false;
       }
     },
     mounted() {

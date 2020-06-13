@@ -2,6 +2,8 @@
   <v-card>
     <v-card-title>
       <v-btn color="primary" @click="add">新增字段</v-btn>
+      <v-btn @click="init">数据库初始化</v-btn>
+      <v-btn @click="dropAll">删除初始化数据库</v-btn>
       <v-spacer/>
       <v-flex xs3>
         <v-text-field label="输入关键字搜索" v-model.lazy="search" append-icon="search" hide-details></v-text-field>
@@ -15,11 +17,14 @@
         <td class="text-xs-center">{{ props.item.name }}</td>
         <td class="text-xs-center">{{ props.item.sysName }}</td>
         <td class="text-xs-center">{{ props.item.type }}</td>
+        <td class="text-xs-center">{{ props.item.typeId }}</td>
         <td class="text-xs-center">{{ props.item.descriptions }}</td>
         <td class="text-xs-center" :class="{jz:props.item.status==0,qy:props.item.status==1}">{{ props.item.status == 1
           ? '启用':'禁止'}}
         </td>
-        <td class="text-xs-center">{{ props.item.userId}}</td>
+        <td class="text-xs-center">
+          <v-btn @click="detail(props.item.userId)">{{ props.item.userId}}</v-btn>
+        </td>
         <td class="text-xs-center">{{ props.item.createdAt }}</td>
         <td class="text-xs-center">{{ props.item.updatedAt }}</td>
         <td class="justify-center layout px-0">
@@ -45,7 +50,24 @@
         </v-toolbar>
         <!--对话框的内容，表单-->
         <v-card-text class="px-5" style="height:400px">
-          <field-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit"/>
+          <field-item @close="closeWindow" :oldItem="oldItem" :isEdit="isEdit" :type="type"/>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog max-width="500" v-model="showUser" persistent scrollable>
+      <v-card>
+        <!--对话框的标题-->
+        <v-toolbar dense dark color="primary">
+          <v-toolbar-title>用户详情</v-toolbar-title>
+          <v-spacer/>
+          <!--关闭窗口的按钮-->
+          <v-btn icon @click="closeWindow">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <!--对话框的内容，表单-->
+        <v-card-text class="px-5" style="height:400px">
+          <user-item @close="closeWindow" :oldItem="showUserItem" :isEdit="!isDetail" :isDetail="isDetail"/>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -54,11 +76,13 @@
 
 <script>
   import FieldItem from "./FieldItem";
+  import UserItem from "../user/UserItem";
 
   export default {
     name: 'field',
     components: {
-      'field-item': FieldItem
+      'field-item': FieldItem,
+      'user-item': UserItem
     },
     data() {
       return {
@@ -66,9 +90,13 @@
         pagination: {},
         search: '',
         show: false,
+        showUser: false,
+        showUserItem: {},
         isEdit: false,
+        isDetail: false,
         totalItems: 0,
         loading: false,
+        type: [],
         headers: [{
           text: '编号',
           align: 'center',
@@ -90,6 +118,11 @@
           sortable: true,
           value: 'type',
         }, {
+          text: '属性类别',
+          align: 'center',
+          sortable: false,
+          value: 'typeId',
+        }, {
           text: '描述信息',
           align: 'center',
           sortable: true,
@@ -100,7 +133,7 @@
           sortable: false,
           value: 'status',
         }, {
-          text: '用户id',
+          text: '所属用户id',
           align: 'center',
           sortable: false,
           value: 'userId',
@@ -142,6 +175,9 @@
         }).catch((err) => {
           console.log(err)
         });
+        this.$http.get('/data/field/type').then(res => {
+          this.type = res.data;
+        }).catch();
       },
       add() {
         this.show = true;
@@ -153,11 +189,38 @@
         this.oldItem = oldItem;
         this.show = true;
       },
+      detail(id) {
+        this.showUser = true;
+        this.isDetail = true;
+        this.$http.get('/user/detail/' + id).then(res => {
+          if (res.status != 200) {
+            alert('该用户不存在!');
+          }
+          this.showUserItem = res.data;
+          this.showUserItem.password = '';
+        }).catch();
+      },
       delete(oldItem) {
+      },
+      dropAll() {
+        this.$http.get('/data/field/drop').then(res => {
+          if (res.status === 200) {
+            this.$message.success('删除成功');
+          }
+        });
       },
       closeWindow() {
         this.getData();
         this.show = false;
+        this.showUser = false;
+      },
+      init() {
+        this.$http.get('/data/field/init').then(res => {
+          if (res.status === 200) {
+            this.$message.success('数据库初始化成功');
+          }
+        }).catch(err => {
+        })
       }
     },
     watch: {

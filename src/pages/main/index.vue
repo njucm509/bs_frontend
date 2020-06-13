@@ -10,13 +10,13 @@
     <!-- 轮播（Carousel）项目 -->
     <div class="carousel-inner">
       <div class="item active">
-        <img src="../../assets/test.png" alt="数据发布">
+        <img src="../../assets/dataRelease.png" alt="数据发布">
       </div>
       <div class="item">
-        <img src="../../assets/test.png" alt="数据加密">
+        <img src="../../assets/dataEncrypt.png" alt="数据加密">
       </div>
       <div class="item">
-        <img src="../../assets/test.png" alt="加密搜索">
+        <img src="../../assets/search.png" alt="加密搜索">
       </div>
     </div>
     <!-- 轮播（Carousel）导航 -->

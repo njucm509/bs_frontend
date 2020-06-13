@@ -23,8 +23,8 @@
     data() {
       return {
         login: {
-          name: '',
-          password: ''
+          name: 'admin',
+          password: '12345678'
         },
         login_rule: {
           name: [{

@@ -165,7 +165,7 @@
         console.log(file);
         let formData = new FormData();
         formData.append("file", file);
-        axios.post('/user/multi', formData, {
+        this.$http.post('/user/multi', formData, {
           headers: {"Content-Type": "multipart/form-data"},
         }).then(res => {
           this.getData();
@@ -178,7 +178,8 @@
       down() {
         this.$http.get('/user/mb/down').then(res => {
           console.log(res);
-          let blob = new Blob([res.data]);
+          // 防止乱码
+          let blob = new Blob(['\ufeff' + res.data], {type: 'text/csv,charset=UTF-8'});
           let link = document.createElement('a');
           link.href = URL.createObjectURL(blob);
           link.download = 'user.csv';
@@ -187,6 +188,7 @@
       },
       edit(oldItem) {
         this.isEdit = true;
+        oldItem.password = '';
         this.oldItem = oldItem;
         this.show = true;
       },
